@@ -43,6 +43,19 @@ function SearchIcon() {
   )
 }
 
+function FilterIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+      className="catalog-filter__svg"
+    >
+      <path d="M4 6h16M7 12h10M10 18h4" />
+    </svg>
+  )
+}
+
 function ProductSkeletonCard() {
   return (
     <article className="product-skeleton">
@@ -66,6 +79,8 @@ function ProductsPage() {
   const searchFromUrl = searchParams.get('q') || ''
   const [query, setQuery] = useState(searchFromUrl)
   const [selectedCategory, setSelectedCategory] = useState('all')
+  const [visibleCategoryIds, setVisibleCategoryIds] = useState(['all'])
+  const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false)
   const deferredQuery = useDeferredValue(query.trim())
 
   useEffect(() => {
@@ -119,6 +134,41 @@ function ProductsPage() {
       })),
     ]
   }, [categoriesQuery.data])
+
+  const defaultVisibleCategoryIds = useMemo(
+    () => categoryOptions.slice(0, 5).map((category) => category.id),
+    [categoryOptions],
+  )
+
+  useEffect(() => {
+    setVisibleCategoryIds(defaultVisibleCategoryIds)
+  }, [defaultVisibleCategoryIds])
+
+  const visibleCategories = useMemo(() => {
+    const categoryMap = new Map(categoryOptions.map((category) => [category.id, category]))
+    return visibleCategoryIds.map((id) => categoryMap.get(id)).filter(Boolean)
+  }, [categoryOptions, visibleCategoryIds])
+
+  const hiddenCategories = useMemo(() => {
+    const visibleIds = new Set(visibleCategoryIds)
+    return categoryOptions.filter((category) => !visibleIds.has(category.id))
+  }, [categoryOptions, visibleCategoryIds])
+
+  const selectCategory = (categoryId) => {
+    setSelectedCategory(categoryId)
+    setIsCategoryMenuOpen(false)
+
+    if (visibleCategoryIds.includes(categoryId)) {
+      return
+    }
+
+    setVisibleCategoryIds((current) => {
+      const replacementIndex = Math.max(current.length - 1, 1)
+      const next = [...current]
+      next[replacementIndex] = categoryId
+      return next
+    })
+  }
 
   const promotionProducts = Array.isArray(sectionsQuery.data?.promotionProducts)
     ? sectionsQuery.data.promotionProducts
@@ -232,17 +282,52 @@ function ProductsPage() {
           </button>
         </div>
 
-        <div className="catalog-chips" role="list" aria-label="Category filters">
-          {categoryOptions.map((category) => (
-            <button
-              key={category.id}
-              type="button"
-              className={`catalog-chip${selectedCategory === category.id ? ' is-active' : ''}`}
-              onClick={() => setSelectedCategory(category.id)}
-            >
-              {category.name}
-            </button>
-          ))}
+        <div className="catalog-category-filter">
+          <div className="catalog-chips" role="list" aria-label="Category filters">
+            {visibleCategories.map((category) => (
+              <button
+                key={category.id}
+                type="button"
+                className={`catalog-chip${selectedCategory === category.id ? ' is-active' : ''}`}
+                onClick={() => selectCategory(category.id)}
+              >
+                {category.name}
+              </button>
+            ))}
+          </div>
+
+          {hiddenCategories.length > 0 ? (
+            <div className="catalog-filter-menu">
+              <button
+                type="button"
+                className={`catalog-filter-button${isCategoryMenuOpen ? ' is-open' : ''}`}
+                aria-expanded={isCategoryMenuOpen}
+                aria-haspopup="true"
+                onClick={() => setIsCategoryMenuOpen((current) => !current)}
+              >
+                <FilterIcon />
+                <span>More</span>
+              </button>
+
+              {isCategoryMenuOpen ? (
+                <div className="catalog-filter-popover" role="menu">
+                  <p className="catalog-filter-popover__title">Browse categories</p>
+                  {hiddenCategories.map((category) => (
+                    <button
+                      key={category.id}
+                      type="button"
+                      className={`catalog-filter-option${selectedCategory === category.id ? ' is-active' : ''}`}
+                      role="menuitem"
+                      onClick={() => selectCategory(category.id)}
+                    >
+                      <span>{category.name}</span>
+                      {selectedCategory === category.id ? <span aria-hidden="true">✓</span> : null}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </form>
 

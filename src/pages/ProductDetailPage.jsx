@@ -137,11 +137,7 @@ function ProductDetailPage() {
               <span className="product-detail__badge product-detail__badge--muted">
                 Prescription required
               </span>
-            ) : (
-              <span className="product-detail__badge product-detail__badge--muted">
-                No prescription needed
-              </span>
-            )}
+            ) : null}
           </div>
         </div>
 

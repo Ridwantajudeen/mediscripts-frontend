@@ -50,7 +50,7 @@ function AdminLoginPage() {
       }}
     >
       <h1 style={{ marginTop: 0 }}>Admin Login</h1>
-      <p style={{ color: '#475569' }}>Sign in with your admin Supabase account to continue.</p>
+      <p style={{ color: '#475569' }}>Sign in with your admin account to continue.</p>
       <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '1rem' }}>
         <label style={{ display: 'grid', gap: '0.35rem' }}>
           <span>Email</span>
