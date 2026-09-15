@@ -127,7 +127,8 @@ function AdminStorefrontPage() {
   }, [products, searchQuery])
 
   const selectedSectionLabel = sectionLabels[activeSection]
-  const canAddMore = selectedIds.length < 5
+  const sectionLimit = activeSection === 'featured' ? 6 : 5
+  const canAddMore = selectedIds.length < sectionLimit
 
   const addProduct = (productId) => {
     if (selectedIds.includes(productId) || otherSelectedIds.includes(productId) || !canAddMore) {
@@ -240,7 +241,10 @@ function AdminStorefrontPage() {
             onClick={() => setActiveSection(sectionKey)}
           >
             <span>{label}</span>
-            <strong>{sectionKey === 'featured' ? featuredProductIds.length : promotionProductIds.length}/5</strong>
+            <strong>
+              {sectionKey === 'featured' ? featuredProductIds.length : promotionProductIds.length}/
+              {sectionKey === 'featured' ? 6 : 5}
+            </strong>
           </button>
         ))}
       </section>
@@ -257,7 +261,7 @@ function AdminStorefrontPage() {
               <h2>{selectedSectionLabel}</h2>
             </div>
             <span className="storefront-panel__limit">
-              {selectedIds.length}/5 selected
+              {selectedIds.length}/{sectionLimit} selected
             </span>
           </div>
 

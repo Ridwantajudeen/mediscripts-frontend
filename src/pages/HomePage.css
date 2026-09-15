@@ -1076,11 +1076,15 @@
   .home-grid--features,
   .trust-grid,
   .category-grid,
-  .home-products-grid,
   .hero__stats,
   .hero__panel-grid,
   .hero__art-flow {
     grid-template-columns: 1fr;
+  }
+
+  .home-products-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
   }
 
   .home-products__toolbar {
