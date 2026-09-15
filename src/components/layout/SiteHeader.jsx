@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { NavLink, Link } from 'react-router-dom'
 import useCart from '../../context/useCart'
 import './SiteHeader.css'
@@ -12,10 +12,41 @@ const navItems = [
 
 function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isCompact, setIsCompact] = useState(false)
+  const [isHidden, setIsHidden] = useState(false)
   const { cartCount } = useCart()
 
+  useEffect(() => {
+    let lastScrollY = window.scrollY
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      const scrollDelta = currentScrollY - lastScrollY
+
+      if (currentScrollY <= 12) {
+        setIsCompact(false)
+        setIsHidden(false)
+      } else if (scrollDelta > 4) {
+        setIsCompact(true)
+        if (currentScrollY > 140) {
+          setIsHidden(true)
+        }
+      } else if (scrollDelta < -3) {
+        setIsCompact(true)
+        setIsHidden(false)
+      }
+
+      lastScrollY = currentScrollY
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   return (
-    <header className="site-header">
+    <header
+      className={`site-header${isCompact ? ' is-compact' : ''}${isHidden && !isMenuOpen ? ' is-hidden' : ''}`}
+    >
       <div className="site-header__inner">
         <Link className="brand" to="/" aria-label="Mediscripts Phamarcy home">
           <img

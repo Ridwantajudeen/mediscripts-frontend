@@ -217,6 +217,33 @@
 }
 
 @media (max-width: 520px) {
+  .product-card {
+    gap: 9px;
+    padding: 10px;
+    border-radius: 14px;
+  }
+
+  .product-card__image-link {
+    aspect-ratio: 1;
+  }
+
+  .product-card__content {
+    gap: 8px;
+  }
+
+  .product-card h3 {
+    font-size: 0.9rem;
+  }
+
+  .product-card p {
+    font-size: 0.82rem;
+    line-height: 1.4;
+  }
+
+  .product-card__category {
+    font-size: 0.68rem;
+  }
+
   .product-card__header {
     align-items: flex-start;
   }
