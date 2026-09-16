@@ -3,6 +3,8 @@ import { socialLinks, supportContacts } from '../../data/siteContent'
 import './SiteFooter.css'
 
 function SiteFooter() {
+  const currentYear = new Date().getFullYear()
+
   return (
     <footer className="site-footer">
       <div className="site-footer__inner">
@@ -44,6 +46,10 @@ function SiteFooter() {
               </a>
             ))}
           </div>
+
+          <p className="site-footer__copyright">
+            &copy; {currentYear} Mediscripts Pharmacy. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

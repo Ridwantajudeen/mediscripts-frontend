@@ -104,6 +104,13 @@
   color: #38c34d;
 }
 
+.site-footer__copyright {
+  margin: 0;
+  padding-top: 2px;
+  color: #64748b;
+  font-size: 0.78rem;
+}
+
 @media (max-width: 760px) {
   .site-footer {
     padding-inline: 14px;
